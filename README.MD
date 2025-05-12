@@ -1,10 +1,8 @@
-# PROJETO BRAINBOX
 
 # 🧠 Brainbox
 
 **Brainbox** é uma aplicação web para gerenciamento de ideias. Ela permite ao usuário criar, visualizar, editar e excluir ideias com base em prioridades. Ideal para organizar projetos, metas pessoais ou brainstorms criativos.
 
----
 
 ## ✨ Funcionalidades
 
@@ -16,7 +14,6 @@
 - 📊 **Classificação por prioridade**: as ideias são marcadas como "Baixa", "Média" ou "Alta" conforme sua prioridade.
 - ⚙️ **Integração com backend**: usa uma API REST com Node.js e MongoDB.
 
----
 
 ## 🛠️ Tecnologias utilizadas
 
@@ -32,7 +29,6 @@
 - Express.js
 - MongoDB com Mongoose
 
----
 
 ## 🚀 Como testar o projeto
 
@@ -52,7 +48,7 @@ Certifique-se de ter instalado:
 
 1. **Clone o repositório:**
 
-```bash
+
 git clone https://github.com/wanderson-xyz/BrainBox
 cd brainbox
 
@@ -60,7 +56,7 @@ cd brainbox
 
 2. **Instale as dependências do backend:**
 
-```bash
+
 
 cd backend
 npm install
@@ -72,7 +68,7 @@ A URL de conexão com o MongoDB está protegida com dotENV.
 4. **Rode o programa**
 
 Na diretório raiz do projeto digite o comando:
-bash```
+
 
 node app.js
 
