@@ -61,7 +61,7 @@ cd brainbox
 cd backend
 npm install
 
-3. ** Configure o MongoDB:**
+3. **Configure o MongoDB:**
 
 A URL de conexão com o MongoDB está protegida com dotENV.
 
