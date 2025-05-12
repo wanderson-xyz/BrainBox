@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const id = item.dataset.id;  // Agora pega o ID real da API
 
             // Requisição para obter os detalhes atualizados desse card da API
-            fetch(`http://localhost:3000/api/braincards/${id}`)
+            fetch(`/api/braincards/${id}`)
                 .then(res => res.json())
                 .then(idea => {
 
@@ -196,7 +196,7 @@ function atualizarDetalhes(idea) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('http://localhost:3000/api/braincards') // seu endpoint GET do backend
+    fetch('/api/braincards') // seu endpoint GET do backend
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -256,7 +256,7 @@ document.getElementById('idea-form').addEventListener('submit', function (e) {
         // Ignorando prioridade, detalhes, criador, métricas por enquanto
     };
 
-    fetch('http://localhost:3000/api/braincards', {
+    fetch('/api/braincards', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novaIdeia)
@@ -319,7 +319,7 @@ saveEditButton.addEventListener('click', function () {
 
     };
 
-    fetch(`http://localhost:3000/api/braincards/${currentCardId}`, {
+    fetch(`/api/braincards/${currentCardId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedIdea)
@@ -354,7 +354,7 @@ document.getElementById('delete-idea').addEventListener('click', function () {
     if (!confirmDelete) return;
 
     // Fazer a requisição DELETE para o backend
-    fetch(`http://localhost:3000/api/braincards/${currentCardId}`, {
+    fetch(`/api/braincards/${currentCardId}`, {
         method: 'DELETE',
     })
         .then(res => {
