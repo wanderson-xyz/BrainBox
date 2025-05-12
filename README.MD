@@ -52,10 +52,12 @@ Certifique-se de ter instalado:
 git clone https://github.com/wanderson-xyz/BrainBox
 cd brainbox
 
+```bash
 
 2. **Instale as dependências do backend:**
 
 ```bash
+
 cd backend
 npm install
 
