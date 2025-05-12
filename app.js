@@ -6,9 +6,7 @@ const path = require('path');
 const { deleteCard, updateCard, createCard, getCardById, getCards } = require('./controllers/card.controllers');
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+
 
 // Serve os arquivos estáticos do frontend
 
