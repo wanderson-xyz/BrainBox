@@ -34,7 +34,11 @@
 
 ---
 
-## 🚀 Como rodar o projeto localmente
+## 🚀 Como testar o projeto
+
+Você pode acessá-lo pelo navegador atravez do link: [BrainBox](https://brainbox-vlyy.onrender.com/)
+
+## Se quiser acessar localmente:
 
 ### 📦 Requisitos
 
