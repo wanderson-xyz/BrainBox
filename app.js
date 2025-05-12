@@ -2,21 +2,26 @@ const express = require('express');
 const mongoose = require('mongoose');
 const BrainBox = require('./models/brainModel');
 const cardsRouter = require('./routes/cards.routes');
+const path = require('path');
 const { deleteCard, updateCard, createCard, getCardById, getCards } = require('./controllers/card.controllers');
+// Serve os arquivos estáticos do frontend
+
 require('dotenv').config();
 Urlmongo = process.env.MONGODB_URI;
 const app = express();
 
 
 //middleware
+app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.get('/favicon.ico', (req, res) => res.status(204));
 app.use("/api/braincards", cardsRouter);
 
 app.get('/', (req, res) => {
-    res.send('hello, world');
+    res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 })
 app.get("/:id", getCardById)
 app.get("/", getCards)

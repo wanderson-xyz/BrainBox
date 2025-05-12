@@ -4,7 +4,7 @@ const BrainBox = require('../models/brainModel');
 
 const getCards = async (req, res) => {
     try {
-        const braincards = await BrainBox.find();
+        const braincards = await BrainBox.find().sort({ criadoEm: -1 });
         res.status(200).json(braincards);
         console.log("Sucessfully fetched all cards");
     } catch (err) {

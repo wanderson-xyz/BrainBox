@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BrainBox - Ideias</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h1 class="logo">BRAINBOX</h1>
+            <nav>
+                <ul>
+                    <li><span>📋</span> Painel</li>
+                    <li><span>✏️</span> Editar</li>
+                    <li><span>🗑️</span> Excluir</li>
+                    <li class="active"><span>👥</span> Priorizar</li>
+                    <li><span>⏱️</span> Pista</li>
+                </ul>
+            </nav>
+            <h3>Ideias</h3>
+            <ul class="idea-categories">
+                <li>🧠 Criatividade</li>
+                <li>🛠️ Personalizar</li>
+                <li>🛡️ Proteção</li>
+                <li>📈 Fluxo de trabalho</li>
+            </ul>
+            <div class="user-info">
+                <img src="https://i.pravatar.cc/40" alt="User" />
+                <div>
+                    <strong>João Smith</strong>
+                    <small>johnsmith@email.abc</small>
+                </div>
+            </div>
+            <ul class="bottom-options">
+                <li>⚙️ Configuração</li>
+                <li>🚪 Sair</li>
+            </ul>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="main">
+            <header class="main-header">
+                <h2>MEUS CARDS</h2>
+             <!--  <div class="filters">
+                    <select>
+                        <option>Ideia</option>
+                    </select>
+                    <select>
+                        <option>Procurar</option>
+                    </select>
+                    <select>
+                        <option>Escala</option>
+                    </select>
+                </div>
+                --> 
+                <button class="new-idea-btn">Nova ideia</button>
+            </header>
+
+            <div class="main-content" id="ideas-container">
+                <p id="empty-message" style="text-align: center; color: gray; display: none;">
+                    Nenhum pensamento registrado.
+                </p>
+
+                <!-- Lista de ideias -->
+                <section class="idea-list" id="idea-list">
+
+
+
+                    <!-- Adicione mais ideias aqui... -->
+                </section>
+
+                <!-- Painel de detalhes -->
+                <section class="idea-details">
+                    <header>
+                        <h3 id="detail-title">Metas financeiras</h3>
+                        <button class="edit-btn">Editar</button>
+                    </header>
+
+                    <div class="meta">
+                        <p><strong>CRIADO EM:</strong> <span id="detail-date"></span></p>
+                        <br>
+                        <p><strong>DETALHES:</strong> <span id="detail-info"></span></p>
+                        <p class="desc" id="detail-description">Clique em uma ideia para ver mais detalhes.</p>
+                        <br>
+                        <p><strong>PRIORIDADE:</strong> <span id="detail-priority"></span></p>
+
+
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Modal para nova ideia -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h3>Criar Nova Ideia</h3>
+                <form id="idea-form">
+                    <input type="text" id="new-title" placeholder="Título da ideia" required />
+                    <input type="text" id="new-description" placeholder="Descrição" required />
+                    <label for="edit-priority">Prioridade:</label>
+                    <select id="edit-priority">
+                        <option value="1">Baixa</option>
+                        <option value="2">Média</option>
+                        <option value="3">Alta</option>
+                    </select>
+
+
+                    <button type="submit">Adicionar Ideia</button>
+                </form>
+            </div>
+        </div>
+
+
+
+        <div id="edit-popup" class="modal">
+            <div class="modal-content">
+                <span id="close-popup" class="close-button">&times;</span>
+                <h3>Editar Ideia</h3>
+                <form id="edit-form">
+                    <input type="text" id="edit-title" placeholder="Título da ideia" required />
+
+
+                    <input type="text" id="edit-description" placeholder="Descrição" />
+                    <label for="create-priority">Prioridade:</label>
+                    <select id="create-priority">
+                        <option value="1">Baixa</option>
+                        <option value="2">Média</option>
+                        <option value="3">Alta</option>
+                    </select>
+                    <br>
+                    <button type="button" id="save-edit">Salvar Alterações</button>
+                    <button type="button" id="delete-idea" style="background-color: #f8d7da; color: #721c24;">
+
+                        🗑️ Deletar Ideia
+                    </button>
+
+
+
+                </form>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>
