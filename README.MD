@@ -49,5 +49,24 @@ Certifique-se de ter instalado:
 1. **Clone o repositório:**
 
 ```bash
-git clone https://github.com/seu-usuario/brainbox.git
+git clone https://github.com/wanderson-xyz/BrainBox
 cd brainbox
+
+
+2. **Instale as dependências do backend:**
+
+```bash
+cd backend
+npm install
+
+3. ** Configure o MongoDB:**
+
+A URL de conexão com o MongoDB está protegida com dotENV.
+
+4. **Rode o programa**
+
+Na diretório raiz do projeto digite o comando:
+bash```
+
+node app.js
+
