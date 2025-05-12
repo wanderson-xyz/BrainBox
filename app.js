@@ -4,6 +4,12 @@ const BrainBox = require('./models/brainModel');
 const cardsRouter = require('./routes/cards.routes');
 const path = require('path');
 const { deleteCard, updateCard, createCard, getCardById, getCards } = require('./controllers/card.controllers');
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
+
 // Serve os arquivos estáticos do frontend
 
 require('dotenv').config();
@@ -38,8 +44,8 @@ app.delete("/:id", deleteCard)
 mongoose.connect(Urlmongo)
     .then(() => {
         console.log('MongoDB connected');
-        app.listen(3000, () => {
-            console.log('Server is running on port 3000');
+        app.listen(PORT, () => {
+            console.log('Server is running on port ${PORT}');
         });
     })
     .catch((err) => {
