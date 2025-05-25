@@ -12,7 +12,7 @@
     <div class="app">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h1 class="logo">BRAINBOX</h1>
+            <h1 class="logo">BRAINBOXX</h1>
             <nav>
                 <ul>
                     <li><span>📋</span> Painel</li>
@@ -45,19 +45,14 @@
         <!-- Conteúdo principal -->
         <main class="main">
             <header class="main-header">
-                <h2>MEUS CARDS</h2>
-                <!--  <div class="filters">
-                    <select>
-                        <option>Ideia</option>
-                    </select>
-                    <select>
-                        <option>Procurar</option>
-                    </select>
-                    <select>
-                        <option>Escala</option>
-                    </select>
-                </div>
-                -->
+              <div class="search-container">
+                <input
+                  type="text"
+                  id="task-search"
+                  placeholder="Buscar tarefas..."
+                  aria-label="Buscar tarefas"
+                />
+              </div>
                 <button class="new-idea-btn">Nova ideia</button>
             </header>
 
@@ -68,11 +63,58 @@
 
                 <!-- Lista de ideias -->
                 <section class="idea-list" id="idea-list">
-
-
-
-                    <!-- Adicione mais ideias aqui... -->
+                  <table>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Nome da Tarefa</th>
+                        <th>Início</th>
+                        <th>Término</th>
+                        <th>Descrição</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>Tarefa 1</td>
+                        <td>17/05</td>
+                        <td>28/05</td>
+                        <td>
+                          <select>
+                            <option>Tarefa do Romildo</option>
+                          </select>
+                        </td>
+                        <td><span class="status-important">Importante</span></td>
+                      </tr>
+                      <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>Design Projeto Ceos</td>
+                        <td>14/05</td>
+                        <td>19/05</td>
+                        <td>
+                          <select>
+                            <option>Darlan e Oliver</option>
+                          </select>
+                        </td>
+                        <td><span class="status-urgent">Urgente</span></td>
+                      </tr>
+                      <tr>
+                        <td><input type="checkbox" /></td>
+                        <td>Estudar Cálculo I</td>
+                        <td>16/05</td>
+                        <td>24/05</td>
+                        <td>
+                          <select>
+                            <option>Primeira Prova</option>
+                          </select>
+                        </td>
+                        <td><span class="status-optional">Opcional</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </section>
+                
 
                 <!-- Painel de detalhes -->
                 <section class="idea-details">

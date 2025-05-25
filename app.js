@@ -30,13 +30,13 @@ app.use("/api/braincards", cardsRouter);
 app.use('/api/users', userRoutes);
 
 app.get('/login', (req, res) => {
-    // res.sendFile(path.resolve('frontend/loginCadastro/index.html'));
-    res.sendFile(path.join(__dirname, 'frontend', 'login.html'));
+  // res.sendFile(path.resolve('frontend/loginCadastro/index.html'));
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 
 })
 
 app.get('/TelaPrincipal', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
 
@@ -47,13 +47,13 @@ app.get('/TelaPrincipal', (req, res) => {
 // Connect to MongoDB and start the server
 
 mongoose.connect(Urlmongo)
-    .then(() => {
-        console.log('MongoDB connected');
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    })
-    .catch((err) => {
-        console.error('MongoDB connection error:', err);
+  .then(() => {
+    console.log('MongoDB connected');
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
     });
+  })
+  .catch((err) => {
+    console.error('MongoDB connection error:', err);
+  });
 
