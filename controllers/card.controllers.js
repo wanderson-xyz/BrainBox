@@ -3,28 +3,33 @@ const BrainBox = require('../models/brainModel');
 
 
 const getCards = async (req, res) => {
-    try {
-        const braincards = await BrainBox.find().sort({ criadoEm: -1 });
-        res.status(200).json(braincards);
-        console.log("Sucessfully fetched all cards");
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: err.message });
-    }
-}
+  try {
+    const braincards = await BrainBox.find({ user: req.userId }).sort({ criadoEm: -1 });
+    res.status(200).json(braincards);
+    console.log(`Cards do usuário ${req.userId} retornados com sucesso`);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.message });
+  }
+};
 
 
 const createCard = async (req, res) => {
-    try {
-        const braincard = new BrainBox(req.body);
-        await braincard.save();
-        res.status(201).json(braincard);
-        console.log("Sucessfully created a new card");
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: err.message });
-    }
-}
+  try {
+    // Adiciona o ID do usuário autenticado ao card
+    const novoCard = new BrainBox({
+      ...req.body,
+      user: req.userId,
+    });
+
+    await novoCard.save();
+    res.status(201).json(novoCard);
+    console.log("Card criado com sucesso");
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: 'Erro ao criar card' });
+  }
+};
 
 
 
@@ -48,37 +53,53 @@ const getCardById = async (req, res) => {
 const deleteCard = async (req, res) => {
     try {
         const { id } = req.params;
-        const braincard = await BrainBox.findByIdAndDelete(id);
-        console.log("Sucessfully deleted a card by id");
+        const braincard = await BrainBox.findById(id);
 
         if (!braincard) {
-            return res.status(404).json({ message: 'Product not found' });
+            return res.status(404).json({ message: 'Card não encontrado' });
         }
-        res.status(200).json(braincard);
+
+        // Verificar se o usuário autenticado é o dono do card
+        if (braincard.user.toString() !== req.userId) {
+            return res.status(403).json({ message: 'Acesso negado: você não é o dono deste card' });
+        }
+
+        await braincard.deleteOne();
+        console.log("Sucessfully deleted a card by id");
+        res.status(200).json({ message: 'Card deletado com sucesso' });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: err.message });
     }
-}
+};
+
 
 
 
 const updateCard = async (req, res) => {
     try {
         const { id } = req.params;
-        const braincard = await BrainBox.findByIdAndUpdate(id, req.body, { new: true });
+        const braincard = await BrainBox.findById(id);
+
         if (!braincard) {
-            return res.status(404).json({ message: 'Product not found' });
+            return res.status(404).json({ message: 'Card não encontrado' });
         }
 
-        const updatedBraincard = await BrainBox.findById(id);
+        // Verificar se o usuário autenticado é o dono do card
+        if (braincard.user.toString() !== req.userId) {
+            return res.status(403).json({ message: 'Acesso negado: você não é o dono deste card' });
+        }
+
+        // Atualizar o card
+        const updatedBraincard = await BrainBox.findByIdAndUpdate(id, req.body, { new: true });
         res.status(200).json(updatedBraincard);
     }
     catch (err) {
         console.log(err);
         res.status(500).json({ message: err.message });
     }
-}
+};
+
 
 
 

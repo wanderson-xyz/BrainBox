@@ -1,37 +1,44 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const BrainBox = require('./models/brainModel');
 const cardsRouter = require('./routes/cards.routes');
+const userRoutes = require('./routes/userRoutes');
 const path = require('path');
-const { deleteCard, updateCard, createCard, getCardById, getCards } = require('./controllers/card.controllers');
 const PORT = process.env.PORT || 3000;
 
 
 
 // Serve os arquivos estáticos do frontend
 
-require('dotenv').config();
+
 Urlmongo = process.env.MONGODB_URI;
 const app = express();
 
+app.use(express.static(path.join(__dirname, 'frontend')));
+
 
 //middleware
-app.use(express.static(path.join(__dirname, 'frontend')));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.use("/api/braincards", cardsRouter);
+app.use('/api/users', userRoutes);
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+app.get('/login', (req, res) => {
+    // res.sendFile(path.resolve('frontend/loginCadastro/index.html'));
+    res.sendFile(path.join(__dirname, 'frontend', 'login.html'));
+
 })
-app.get("/:id", getCardById)
-app.get("/", getCards)
-app.post("/", createCard)
-app.put("/:id", updateCard)
-app.delete("/:id", deleteCard)
+
+app.get('/TelaPrincipal', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
 
 
 

@@ -138,7 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const details = document.querySelector('#detail-info');
 
 
-   
+
+
+
+
     document.querySelectorAll('.idea-item').forEach(item => {
         item.addEventListener('click', () => {
             const id = item.dataset.id;  // Agora pega o ID real da API
@@ -171,12 +174,14 @@ document.addEventListener('DOMContentLoaded', () => {
     ideaItems[0].click();
 });
 
+
+
 function atualizarDetalhes(idea) {
     document.getElementById('detail-title').textContent = idea.titulo;
     document.getElementById('detail-description').textContent = idea.descricao;
     document.getElementById('detail-priority').textContent = idea.prioridade
     document.getElementById('detail-date').textContent = new Date(idea.criadoEm).toLocaleDateString();
-     let prioridadeTexto = '';
+    let prioridadeTexto = '';
     switch (idea.prioridade) {
         case 1:
             prioridadeTexto = 'Baixa';
@@ -195,8 +200,24 @@ function atualizarDetalhes(idea) {
 }
 
 
+
+const token = localStorage.getItem('token');
+
+
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('/api/braincards') // seu endpoint GET do backend
+
+ 
+    if (!token) {
+        // Se não houver token, redireciona para login
+        alert('Acesso negado. Faça login primeiro.');
+        window.location.href = '/login';
+        return;
+    }
+    fetch('/api/braincards', {
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+    }) // seu endpoint GET do backend
         .then(res => res.json())
         .then(data => {
             console.log(data)
@@ -258,7 +279,10 @@ document.getElementById('idea-form').addEventListener('submit', function (e) {
 
     fetch('/api/braincards', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
         body: JSON.stringify(novaIdeia)
     })
         .then(res => {
@@ -286,8 +310,8 @@ editButton.addEventListener('click', function () {
     // Pega os dados visíveis da lateral
     const title = document.getElementById('detail-title').textContent;
     const description = document.getElementById('detail-description').textContent;
-   
-    
+
+
 
 
     editTitleInput.value = title;
@@ -307,7 +331,7 @@ saveEditButton.addEventListener('click', function () {
     const updatedTitle = editTitleInput.value;
     const updatedDescription = editDescriptionInput.value;
     const updatedPriority = document.getElementById('edit-priority').value;
-// Envie updatedPriority no corpo da requisição PUT
+    // Envie updatedPriority no corpo da requisição PUT
 
 
 
@@ -321,7 +345,10 @@ saveEditButton.addEventListener('click', function () {
 
     fetch(`/api/braincards/${currentCardId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
         body: JSON.stringify(updatedIdea)
     })
         .then(res => {
@@ -356,6 +383,10 @@ document.getElementById('delete-idea').addEventListener('click', function () {
     // Fazer a requisição DELETE para o backend
     fetch(`/api/braincards/${currentCardId}`, {
         method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+
     })
         .then(res => {
             if (!res.ok) throw new Error('Erro ao excluir a ideia');
@@ -370,5 +401,12 @@ document.getElementById('delete-idea').addEventListener('click', function () {
 // Botão "Fechar"
 closePopupButton.addEventListener('click', function () {
     popup.style.display = 'none';
+});
+
+
+// Essa função deve ser chamada quando o usuário clicar no botão de logout
+document.getElementById('logout-btn').addEventListener('click', () => {
+    localStorage.removeItem('token'); // Remove o token
+    window.location.href = '/login';  // Redireciona para a tela de login
 });
 
