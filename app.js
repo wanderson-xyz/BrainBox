@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 // Serve os arquivos estáticos do frontend
 
 
-Urlmongo = process.env.MONGODB_URI;
+Urlmongo = process.env.MONGODB_URI
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'frontend')));

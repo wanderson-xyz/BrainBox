@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BrainBox - Ideias</title>
+    <title>Produtivix - TO-DO</title>
     <link rel="stylesheet" href="/css/index.css" />
 </head>
 
@@ -12,14 +12,14 @@
     <div class="app">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <h1 class="logo">BRAINBOX</h1>
+            <h1 class="logo">PRODUTIVIX</h1>
             <nav>
                 <ul>
                     <li><span>📋</span> Painel</li>
                     <li><span>✏️</span> Editar</li>
                     <li><span>🗑️</span> Excluir</li>
-                    <li class="active"><span>👥</span> Priorizar</li>
-                    <li><span>⏱️</span> Pista</li>
+                    <li><span>👥</span> Priorizar</li>
+
                 </ul>
             </nav>
             <h3>Ideias</h3>
@@ -45,34 +45,73 @@
         <!-- Conteúdo principal -->
         <main class="main">
             <header class="main-header">
-                <h2>MEUS CARDS</h2>
-                <!--  <div class="filters">
-                    <select>
-                        <option>Ideia</option>
-                    </select>
-                    <select>
-                        <option>Procurar</option>
-                    </select>
-                    <select>
-                        <option>Escala</option>
-                    </select>
+                <div class="search-container">
+                    <input type="text" id="task-search" placeholder="Buscar tarefas..." aria-label="Buscar tarefas" />
                 </div>
-                -->
                 <button class="new-idea-btn">Nova ideia</button>
             </header>
 
             <div class="main-content" id="ideas-container">
-                <p id="empty-message" style="text-align: center; color: gray; display: none;">
-                    Nenhum pensamento registrado.
-                </p>
+
 
                 <!-- Lista de ideias -->
                 <section class="idea-list" id="idea-list">
+                    <table>
 
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Nome da Tarefa</th>
+                                <th>Início</th>
+                                <th>Término</th>
+                                <th>Descrição</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
 
+                        <tbody id="idea-table-body">
+                            
+                                
 
-                    <!-- Adicione mais ideias aqui... -->
+                            <tr>
+                                <td><input type="checkbox" /></td>
+                                <td>Tarefa 1</td>
+                                <td>17/05</td>
+                                <td>28/05</td>
+                                <td>
+                                    Tarefa do Romildo
+
+                                </td>
+                                <td><span class="status-important">Importante</span></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" /></td>
+                                <td>Design Projeto Ceos</td>
+                                <td>14/05</td>
+                                <td>19/05</td>
+                                <td>Darlan e Oliver</td>
+                                <td><span class="status-urgent">Urgente</span></td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" /></td>
+                                <td>Estudar Cálculo I</td>
+                                <td>16/05</td>
+                                <td>24/05</td>
+                                <td>
+
+                                    Primeira Prova
+
+                                </td>
+                                <td><span class="status-optional">Opcional</span></td>
+                                <p id="empty-message" style="text-align: center; color: gray; display: none;">
+                                    Nenhum registro encontrado.
+                                </p>
+                            
+                            </tr>
+                        </tbody>
+                    </table>
                 </section>
+
 
                 <!-- Painel de detalhes -->
                 <section class="idea-details">
@@ -103,6 +142,8 @@
                 <form id="idea-form">
                     <input type="text" id="new-title" placeholder="Título da ideia" required />
                     <input type="text" id="new-description" placeholder="Descrição" required />
+                    <label for="new-termino">Termina em:</label>
+                    <input type="date" id="new-termino" required />
                     <label for="edit-priority">Prioridade:</label>
                     <select id="edit-priority">
                         <option value="1">Baixa</option>
@@ -124,9 +165,9 @@
                 <h3>Editar Ideia</h3>
                 <form id="edit-form">
                     <input type="text" id="edit-title" placeholder="Título da ideia" required />
-
-
                     <input type="text" id="edit-description" placeholder="Descrição" />
+                    <label for="edit-termino">Termina em:</label>
+                    <input type="date" id="edit-termino" />
                     <label for="create-priority">Prioridade:</label>
                     <select id="create-priority">
                         <option value="1">Baixa</option>
@@ -135,10 +176,8 @@
                     </select>
                     <br>
                     <button type="button" id="save-edit">Salvar Alterações</button>
-                    <button type="button" id="delete-idea" style="background-color: #f8d7da; color: #721c24;">
-
-                        🗑️ Deletar Ideia
-                    </button>
+                    <button type="button" id="delete-idea" style="background-color: #f8d7da; color: #721c24;">🗑️
+                        Deletar Ideia</button>
 
 
 

@@ -102,6 +102,37 @@ const updateCard = async (req, res) => {
 
 
 
+const searchCards = async (req, res) => {
+    try {
+        const searchTerm = req.query.titulo;
+
+        if (!searchTerm) {
+            const allCards = await BrainBox.find().sort({ criadoEm: -1 });
+            return res.status(200).json(allCards);
+        }
+
+        const searchQuery = {
+            titulo: { $regex: searchTerm, $options: 'i' }
+        };
+
+        const braincards = await BrainBox.find(searchQuery).sort({ criadoEm: -1 });
+
+        if (braincards.length === 0) {
+            console.log(`No cards found matching "${searchTerm}"`);
+            return res.status(200).json([]);
+        }
+
+        res.status(200).json(braincards);
+        console.log(`Successfully fetched cards matching "${searchTerm}"`);
+
+    } catch (err) {
+        console.error("Error during search:", err);
+        res.status(500).json({ message: "Erro ao buscar os cards: " + err.message });
+    }
+};
+
+
+
 
 
 module.exports = {
@@ -109,5 +140,6 @@ module.exports = {
     createCard,
     getCardById,
     deleteCard,
-    updateCard
+    updateCard,
+    searchCards
 }

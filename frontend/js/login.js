@@ -24,7 +24,7 @@ document.querySelectorAll('.form')[1].addEventListener('submit', async (e) => {
   const email = e.target.email.value;
   const senha = e.target.senha.value;
 
-  const resposta = await fetch('http://localhost:3000/api/users/login', {
+  const resposta = await fetch('/api/users/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ document.querySelectorAll('.form')[0].addEventListener('submit', async (e) => {
     return;
   }
   document.body.className = "sign-in-js"; // 👉 animação de volta para login
-  const resposta = await fetch('http://localhost:3000/api/users/register', {
+  const resposta = await fetch('/api/users/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

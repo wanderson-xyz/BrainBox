@@ -3,6 +3,10 @@ const modal = document.getElementById('modal');
 const form = document.getElementById('idea-form');
 const newIdeaBtn = document.querySelector('.new-idea-btn');
 const closeBtn = document.querySelector('.close-button');
+const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
+document.getElementById('edit-termino').setAttribute('min', today);
+
+
 
 // Abre modal
 newIdeaBtn.addEventListener('click', () => {
@@ -73,6 +77,9 @@ const closePopupButton = document.getElementById('close-popup');
 const saveEditButton = document.getElementById('save-edit');
 const editTitleInput = document.getElementById('edit-title');
 const editDescriptionInput = document.getElementById('edit-description');
+const editPriorityInput = document.getElementById('create-priority'); // Adiciona o campo de prioridade
+const editTerminoInput = document.getElementById('edit-termino');
+
 
 let currentCardId = null;
 
@@ -203,77 +210,170 @@ function atualizarDetalhes(idea) {
 
 const token = localStorage.getItem('token');
 
-
-document.addEventListener('DOMContentLoaded', () => {
-
- 
-    if (!token) {
-        // Se não houver token, redireciona para login
-        alert('Acesso negado. Faça login primeiro.');
-        window.location.href = '/login';
-        return;
-    }
+function carregarIdeias() {
     fetch('/api/braincards', {
         headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
+            'Authorization': 'Bearer ' + token
         }
-    }) // seu endpoint GET do backend
+    })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
-            const ideaList = document.getElementById('idea-list');
+            console.log(data);
+
+
+            const tbody = document.querySelector('#idea-list tbody');
             const emptyMsg = document.getElementById('empty-message');
+            const ideaDetails = document.querySelector('.idea-details');
+
+            tbody.innerHTML = ''; // Limpa a tabela antes de adicionar os dados
 
             if (data.length === 0) {
-                document.querySelector('.idea-details').style.display = 'none';
+                ideaDetails.style.display = 'none';
                 emptyMsg.style.display = 'block';
+                return;
             } else {
                 emptyMsg.style.display = 'none';
+                ideaDetails.style.display = 'block';
+            }
 
-                data.forEach(idea => {
-                    const card = document.createElement('button');
-                    card.classList.add('idea-item');
-                    card.dataset.id = idea._id;  // Armazena o ID real da API no dataset
-                    card.setAttribute('data-title', idea.titulo);
-                    card.setAttribute('data-description', idea.descricao);
-                    card.setAttribute('data-date', new Date(idea.criadoEm).toLocaleDateString());
+            data.forEach(idea => {
+                console.log("Ideia carregada:", idea);
+                const tr = document.createElement('tr');
 
-                    const descricaoLimitada = idea.descricao.split(' ').slice(0, 4).join(' ') + '...';
 
-                    card.innerHTML = `
-            <strong>${idea.titulo}</strong>
-            <p>${descricaoLimitada}</p>
-          `;
 
-                    card.addEventListener('click', () => {
-                        atualizarDetalhes(idea);
-                        currentCardId = card.dataset.id; // Agora o ID correto é armazenado
-                        console.log("ID do card selecionado:", currentCardId);
-                        document.querySelector('.idea-details').style.display = 'block';
-                    });
+                // Checkbox
+                const tdCheckbox = document.createElement('td');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
 
-                    ideaList.appendChild(card);
+                // Adiciona o valor de concluída do banco no checkbox
+                checkbox.checked = idea.concluida;
+
+                // Aplica o riscado se estiver concluída
+                if (idea.concluida) {
+                    tr.classList.add('linha-tachada'); // aplica a linha completa
+                }
+
+                // Adiciona o event listener aqui:
+                checkbox.addEventListener('change', function () {
+                    const isChecked = this.checked;
+                    const tr = this.closest('tr');
+
+                    if (isChecked) {
+                        tr.classList.add('linha-tachada'); // aplica a linha completa
+                    } else {
+                        tr.classList.remove('linha-tachada');
+                    }
+                    atualizarIdeia(idea._id, { concluida: isChecked })
+                        .then(data => {
+                            console.log('Concluída atualizada:', data);
+                        })
+                        .catch(err => {
+                            console.error('Erro ao atualizar conclusão:', err);
+                        });
                 });
 
-                // Seleciona o primeiro card ao iniciar (opcional)
-                if (data.length > 0) {
-                    atualizarDetalhes(data[0]);
+                tdCheckbox.appendChild(checkbox);
+                tr.appendChild(tdCheckbox);
+
+                // Nome da Tarefa
+                const tdTitulo = document.createElement('td');
+                tdTitulo.textContent = idea.titulo;
+                tr.appendChild(tdTitulo);
+
+                // Início (dataInicio formatada)
+                const tdInicio = document.createElement('td');
+                tdInicio.textContent = new Date(idea.criadoEm).toLocaleDateString();
+                tr.appendChild(tdInicio);
+
+                // Término (dataTermino formatada)
+                const tdTermino = document.createElement('td');
+                tdTermino.textContent = new Date(idea.termino).toLocaleDateString();
+                tr.appendChild(tdTermino);
+
+                // Descrição (coluna com select)
+                const descricaoLimitada = idea.descricao
+                    ? (idea.descricao.length > 10 ? idea.descricao.slice(0, 10) + '...' : idea.descricao)
+                    : 'Sem detalhes';
+                const tdDescricao = document.createElement('td');
+                tdDescricao.textContent = descricaoLimitada;
+                tr.appendChild(tdDescricao);
+
+                // Status (span com classe conforme prioridade)
+                const tdStatus = document.createElement('td');
+                const spanStatus = document.createElement('span');
+
+                // Exemplo de lógica para definir classe conforme prioridade
+                if (idea.prioridade === 3) {
+                    spanStatus.className = 'status-urgent';
+                    spanStatus.textContent = 'Urgente';
+                } else if (idea.prioridade === 2) {
+                    spanStatus.className = 'status-important';
+                    spanStatus.textContent = 'Importante';
+                } else {
+                    spanStatus.className = 'status-optional';
+                    spanStatus.textContent = 'Opcional';
                 }
+
+                tdStatus.appendChild(spanStatus);
+                tr.appendChild(tdStatus);
+
+                // Armazenar o ID no dataset para eventuais ações
+                tr.dataset.id = idea._id;
+
+                // Adiciona evento para atualizar detalhes ao clicar na linha
+                tr.addEventListener('click', () => {
+                    atualizarDetalhes(idea);
+                    currentCardId = idea._id;
+                    console.log("ID do card selecionado:", currentCardId);
+                    window.currentIdea = idea; // Guarda o objeto da ideia para ser usado depois no botão de editar
+
+                    ideaDetails.style.display = 'block';
+                });
+
+                tbody.appendChild(tr);
+            });
+
+            // Opcional: seleciona o primeiro item automaticamente
+            if (data.length > 0) {
+                atualizarDetalhes(data[0]);
             }
         })
         .catch(err => {
             console.error('Erro ao buscar ideias:', err);
         });
-});
+};
+
+
+
+const ideaListSection = document.getElementById('idea-list');
+document.addEventListener('DOMContentLoaded', () => {
+    inicializarBusca();
+    buscarCardsNoBackend();
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Acesso negado. Faça login primeiro.');
+        window.location.href = '/login';
+        return;
+    }
+    carregarIdeias(); // Carrega as ideias ao iniciar a página
+})
+
+// Inicializa a busca e carrega os cards do backend
+
 
 //ADICIONA UM NOVO CARD AO BANCO DE DADOS
 
 document.getElementById('idea-form').addEventListener('submit', function (e) {
     e.preventDefault();
 
+    const terminoInput = document.getElementById('new-termino').value;
     const novaIdeia = {
         titulo: document.getElementById('new-title').value,
-        descricao: document.getElementById('new-description').value
+        descricao: document.getElementById('new-description').value,
+        termino: new Date(terminoInput).toISOString(), // Converte a data para o formato ISO
+        prioridade: parseInt(document.getElementById('edit-priority').value) // Converte para número
         // Ignorando prioridade, detalhes, criador, métricas por enquanto
     };
 
@@ -295,7 +395,7 @@ document.getElementById('idea-form').addEventListener('submit', function (e) {
 
 
             // Opcional: recarregar os cards
-            location.reload(); // Ou você pode chamar uma função para re-renderizar os cards sem recarregar
+            carregarIdeias();// Ou você pode chamar uma função para re-renderizar os cards sem recarregar
         })
         .catch(err => {
             console.error('Erro:', err);
@@ -305,20 +405,48 @@ document.getElementById('idea-form').addEventListener('submit', function (e) {
 
 // Botão "Editar" na lateral
 editButton.addEventListener('click', function () {
-    console.log("botão clicado");
+    console.log("Botão de editar clicado");
 
-    // Pega os dados visíveis da lateral
-    const title = document.getElementById('detail-title').textContent;
-    const description = document.getElementById('detail-description').textContent;
+    const idea = window.currentIdea;
+    if (!idea) {
+        alert("Nenhuma ideia selecionada.");
+        return;
+    }
 
+    // Preenche os campos com os dados atuais
+    editTitleInput.value = idea.titulo;
+    editDescriptionInput.value = idea.descricao;
 
+    // Prioridade numérica (1, 2, 3)
+    editPriorityInput.value = idea.prioridade;
 
-
-    editTitleInput.value = title;
-    editDescriptionInput.value = description;
+    // Formata a data no formato "yyyy-mm-dd" para input type="date"
+    const dataFormatada = new Date(idea.termino).toISOString().split('T')[0];
+    editTerminoInput.value = dataFormatada;
 
     popup.style.display = 'block';
 });
+
+
+// Função para atualizar uma ideia no banco de dados
+function atualizarIdeia(id, dadosAtualizados) {
+    return fetch(`/api/braincards/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify(dadosAtualizados)
+    })
+        .then(res => {
+            if (!res.ok) throw new Error('Erro ao atualizar ideia');
+            return res.json();
+        });
+}
+
+
+
+
 
 // Botão "Salvar" no popup
 saveEditButton.addEventListener('click', function () {
@@ -330,7 +458,9 @@ saveEditButton.addEventListener('click', function () {
 
     const updatedTitle = editTitleInput.value;
     const updatedDescription = editDescriptionInput.value;
-    const updatedPriority = document.getElementById('edit-priority').value;
+    const updatedPriority = parseInt(document.getElementById('create-priority').value)
+    const updateTermino = document.getElementById('edit-termino').value;
+
     // Envie updatedPriority no corpo da requisição PUT
 
 
@@ -339,28 +469,19 @@ saveEditButton.addEventListener('click', function () {
     const updatedIdea = {
         titulo: updatedTitle,
         descricao: updatedDescription,
-        prioridade: updatedPriority
+        prioridade: updatedPriority,
+        termino: new Date(updateTermino).toISOString(),
 
     };
+    atualizarIdeia(currentCardId, updatedIdea)
 
-    fetch(`/api/braincards/${currentCardId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
-        },
-        body: JSON.stringify(updatedIdea)
-    })
-        .then(res => {
-            if (!res.ok) throw new Error('Erro ao atualizar');
-            return res.json();
-        })
+
         .then(data => {
             console.log('Ideia atualizada no banco de dados:', data);
 
             // Opcional: você pode recarregar os dados da API após a atualização (ou fazer uma nova requisição para obter os dados atualizados)
             // Isso pode ser feito chamando a função que carrega os dados ou recarregando a página
-            location.reload();  // Recarrega a página para buscar os dados atualizados da API
+            carregarIdeias();  // Recarrega a página para buscar os dados atualizados da API
 
             popup.style.display = 'none';  // Fecha o popup
         })
@@ -391,9 +512,10 @@ document.getElementById('delete-idea').addEventListener('click', function () {
         .then(res => {
             if (!res.ok) throw new Error('Erro ao excluir a ideia');
             console.log('Ideia excluída com sucesso!');
+            carregarIdeias();  // Recarrega a página para buscar os dados atualizados da API
         })
 
-    location.reload();  // Recarrega a página para buscar os dados atualizados da API
+    
 
     popup.style.display = 'none';
 })
@@ -402,6 +524,105 @@ document.getElementById('delete-idea').addEventListener('click', function () {
 closePopupButton.addEventListener('click', function () {
     popup.style.display = 'none';
 });
+
+
+async function buscarCardsNoBackend(termoDeBusca) {
+    const apiBaseUrl = '/api/braincards';
+
+    try {
+        let url;
+        const termoLimpo = termoDeBusca ? termoDeBusca.trim() : "";
+
+        if (termoLimpo) {
+            const termoCodificado = encodeURIComponent(termoLimpo);
+            url = `${apiBaseUrl}/search?titulo=${termoCodificado}`;
+        } else {
+            url = apiBaseUrl;
+        }
+
+        console.log(`Frontend: Buscando em: ${url}`);
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: `Erro HTTP ${response.status}` }));
+            throw new Error(errorData.message || `Erro ao buscar dados: ${response.status}`);
+        }
+
+        const cards = await response.json();
+        renderizarCards(cards);
+
+    } catch (error) {
+        console.error('Falha ao buscar cards:', error);
+        if (ideaListSection) {
+            ideaListSection.innerHTML = `<p class="error-message" style="color: red; text-align: center;">Erro ao carregar cards: ${error.message}.</p>`;
+        }
+    }
+}
+
+
+function inicializarBusca() {
+    const barraPesquisaInput = document.getElementById('task-search');
+    let debounceTimer;
+
+    if (barraPesquisaInput) {
+        barraPesquisaInput.addEventListener('input', (event) => {
+            const termoDigitado = event.target.value;
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                buscarCardsNoBackend(termoDigitado);
+            }, 300);
+        });
+    }
+}
+
+function renderizarCards(cards) {
+  const tbody = document.getElementById('idea-table-body');
+  const emptyMessage = document.getElementById('empty-message');
+
+  if (!tbody) return;
+
+  if (cards.length === 0) {
+    tbody.innerHTML = '';
+    emptyMessage.style.display = 'block';
+    emptyMessage.innerText = 'Nenhum registro encontrado.';
+    return;
+  }
+
+  emptyMessage.style.display = 'none';
+
+  tbody.innerHTML = '';
+
+  cards.forEach(card => {
+    const inicio = new Date(card.criadoEm).toLocaleDateString('pt-BR');
+    const termino = card.termino ? new Date(card.termino).toLocaleDateString('pt-BR') : '';
+
+    const prioridadeClass = card.prioridade === 3 ? 'status-important'
+                       : card.prioridade === 2 ? 'status-urgent'
+                       : 'status-optional';
+
+    const rowHTML = `
+      <tr>
+        <td><input type="checkbox" data-id="${card._id}" ${card.concluida ? 'checked' : ''}></td>
+        <td>${card.titulo}</td>
+        <td>${inicio}</td>
+        <td>${termino}</td>
+        <td>${card.descricao}</td>
+        <td><span class="${prioridadeClass}">${prioridadeClass.replace('status-', '').toUpperCase()}</span></td>
+      </tr>
+    `;
+
+    tbody.insertAdjacentHTML('beforeend', rowHTML);
+  });
+
+  // Aqui pode adicionar event listeners para checkboxes, etc, se tiver
+}
+
+
 
 
 // Essa função deve ser chamada quando o usuário clicar no botão de logout
