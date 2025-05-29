@@ -5,6 +5,8 @@ const newIdeaBtn = document.querySelector('.new-idea-btn');
 const closeBtn = document.querySelector('.close-button');
 const today = new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
 document.getElementById('edit-termino').setAttribute('min', today);
+document.getElementById('new-termino').setAttribute('min', today);
+
 
 
 
@@ -180,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 function atualizarDetalhes(idea) {
+
     document.getElementById('detail-title').textContent = idea.titulo;
     document.getElementById('detail-description').textContent = idea.descricao;
     document.getElementById('detail-priority').textContent = idea.prioridade
@@ -353,6 +356,17 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '/login';
         return;
     }
+
+
+    // 👇 Atualiza a interface com nome e email
+    const nome = localStorage.getItem('usuario_nome');
+    const email = localStorage.getItem('usuario_email');
+
+    if (nome && email) {
+        document.querySelector('.user-info strong').textContent = nome;
+        document.querySelector('.user-info small').textContent = email;
+    }
+
     carregarIdeias(); // Carrega as ideias ao iniciar a página
 })
 
@@ -511,7 +525,7 @@ document.getElementById('delete-idea').addEventListener('click', function () {
             carregarIdeias();  // Recarrega a página para buscar os dados atualizados da API
         })
 
-    
+
 
     popup.style.display = 'none';
 })
@@ -577,37 +591,37 @@ function inicializarBusca() {
 }
 
 function renderizarCards(cards) {
-  const tbody = document.getElementById('idea-table-body');
-  const emptyMessage = document.getElementById('empty-message');
+    const tbody = document.getElementById('idea-table-body');
+    const emptyMessage = document.getElementById('empty-message');
 
-  if (!tbody) return;
+    if (!tbody) return;
 
-  if (cards.length === 0) {
+    if (cards.length === 0) {
+        tbody.innerHTML = '';
+        emptyMessage.style.display = 'block';
+        emptyMessage.innerText = 'Nenhuma tarefa encontrada.';
+        return;
+    }
+
+    emptyMessage.style.display = 'none';
     tbody.innerHTML = '';
-    emptyMessage.style.display = 'block';
-    emptyMessage.innerText = 'Nenhuma tarefa encontrada.';
-    return;
-  }
 
-  emptyMessage.style.display = 'none';
-  tbody.innerHTML = '';
+    cards.forEach(card => {
+        const inicio = new Date(card.criadoEm).toLocaleDateString('pt-BR');
+        const termino = card.termino ? new Date(card.termino).toLocaleDateString('pt-BR') : '';
 
-  cards.forEach(card => {
-    const inicio = new Date(card.criadoEm).toLocaleDateString('pt-BR');
-    const termino = card.termino ? new Date(card.termino).toLocaleDateString('pt-BR') : '';
+        const prioridadeClass = card.prioridade === 3 ? 'status-urgent'
+            : card.prioridade === 2 ? 'status-important'
+                : 'status-optional';
 
-    const prioridadeClass = card.prioridade === 3 ? 'status-urgent'
-                   : card.prioridade === 2 ? 'status-important'
-                   : 'status-optional';
+        let prioridadeTexto = '';
+        if (card.prioridade === 3) prioridadeTexto = 'Urgente';
+        else if (card.prioridade === 2) prioridadeTexto = 'Importante';
+        else prioridadeTexto = 'Opcional';
 
-    let prioridadeTexto = '';
-    if (card.prioridade === 3) prioridadeTexto = 'Urgente';
-    else if (card.prioridade === 2) prioridadeTexto = 'Importante';
-    else prioridadeTexto = 'Opcional';
-
-    // Crie a linha manualmente
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+        // Crie a linha manualmente
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
         <td><input type="checkbox" data-id="${card._id}" ${card.concluida ? 'checked' : ''}></td>
         <td>${card.titulo}</td>
         <td>${inicio}</td>
@@ -616,15 +630,15 @@ function renderizarCards(cards) {
         <td><span class="${prioridadeClass}">${prioridadeTexto}</span></td>
     `;
 
-    tr.addEventListener('click', () => {
-      window.currentIdea = card;
-      atualizarDetalhes(card); // 
-      tbody.querySelectorAll('tr').forEach(row => row.classList.remove('selected-idea'));
-      tr.classList.add('selected-idea');
-    });
+        tr.addEventListener('click', () => {
+            window.currentIdea = card;
+            atualizarDetalhes(card); // 
+            tbody.querySelectorAll('tr').forEach(row => row.classList.remove('selected-idea'));
+            tr.classList.add('selected-idea');
+        });
 
-    tbody.appendChild(tr);
-  });
+        tbody.appendChild(tr);
+    });
 }
 
 

@@ -36,6 +36,8 @@ document.querySelectorAll('.form')[1].addEventListener('submit', async (e) => {
 
   if (resposta.ok) {
     localStorage.setItem('token', dados.token);
+    localStorage.setItem('usuario_nome', dados.user.nome);
+    localStorage.setItem('usuario_email', dados.user.email);
     alert('Login realizado com sucesso!');
     // redireciona para página principal
     window.location.href = '/TelaPrincipal';
@@ -87,9 +89,9 @@ document.querySelectorAll('.form')[0].addEventListener('submit', async (e) => {
   if (resposta.ok) {
     mostrarMensagem('Cadastro realizado com sucesso! Faça login agora.');
     // animação: mudar pra tela de login após 1s
-    
-      
-    
+
+
+
 
   } else {
     alert(dados.message || 'Erro ao cadastrar');
