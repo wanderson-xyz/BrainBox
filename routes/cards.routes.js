@@ -5,7 +5,7 @@ const autenticar = require('../controllers/authMiddleware');
 
 router.get('/', autenticar, getCards);
 router.post('/', autenticar, createCard);
-router.get('/search', searchCards);
+router.get('/search',autenticar, searchCards);
 router.get('/:id', autenticar, getCardById);
 router.delete('/:id',autenticar, deleteCard);
 router.put('/:id',autenticar, updateCard);

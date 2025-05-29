@@ -22,7 +22,7 @@ body, html {
 /* SIDEBAR */
 .sidebar {
   width: 260px;
-  background-color: #9e9c9c;
+  background-color: #58af9b;
   padding: 25px 20px;
   display: flex;
   flex-direction: column;
@@ -35,7 +35,7 @@ body, html {
   font-size: 28px;
   font-weight: 900;
   margin-bottom: 20px;
-  color: #222;
+  color: #fff;
 }
 
 .sidebar ul {
@@ -154,7 +154,7 @@ body, html {
 }
 
 .new-idea-btn {
-  background-color: #a5a5a5;
+  background-color: #58af9b;
   padding: 12px 22px;
   border-radius: 15px;
   color: white;
@@ -281,10 +281,11 @@ body, html {
 }
 
 .edit-btn {
-  background-color: #d6d6d6;
+  background-color: #58af9b;
   border: none;
   padding: 10px 18px;
-  border-radius: 20px;
+  border-radius: 14px;
+  color: white;
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s ease;
@@ -317,7 +318,6 @@ body, html {
   height: 100%;
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
-  display: flex;
   justify-content: center;
   align-items: center;
 }

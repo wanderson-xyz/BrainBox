@@ -10,7 +10,7 @@ document.getElementById('edit-termino').setAttribute('min', today);
 
 // Abre modal
 newIdeaBtn.addEventListener('click', () => {
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
 });
 
 // Fecha modal
@@ -138,11 +138,7 @@ deleteButton.addEventListener('click', function () {
 
 document.addEventListener('DOMContentLoaded', () => {
     const ideaItems = document.querySelectorAll('.idea-item');
-    const title = document.querySelector('#detail-title');
-    const description = document.querySelector('#detail-description');
-    const creator = document.querySelector('#detail-creator');
-    const date = document.querySelector('#detail-date');
-    const details = document.querySelector('#detail-info');
+
 
 
 
@@ -424,7 +420,7 @@ editButton.addEventListener('click', function () {
     const dataFormatada = new Date(idea.termino).toISOString().split('T')[0];
     editTerminoInput.value = dataFormatada;
 
-    popup.style.display = 'block';
+    popup.style.display = 'flex';
 });
 
 
@@ -589,39 +585,47 @@ function renderizarCards(cards) {
   if (cards.length === 0) {
     tbody.innerHTML = '';
     emptyMessage.style.display = 'block';
-    emptyMessage.innerText = 'Nenhum registro encontrado.';
+    emptyMessage.innerText = 'Nenhuma tarefa encontrada.';
     return;
   }
 
   emptyMessage.style.display = 'none';
-
   tbody.innerHTML = '';
 
   cards.forEach(card => {
     const inicio = new Date(card.criadoEm).toLocaleDateString('pt-BR');
     const termino = card.termino ? new Date(card.termino).toLocaleDateString('pt-BR') : '';
 
-    const prioridadeClass = card.prioridade === 3 ? 'status-important'
-                       : card.prioridade === 2 ? 'status-urgent'
-                       : 'status-optional';
+    const prioridadeClass = card.prioridade === 3 ? 'status-urgent'
+                   : card.prioridade === 2 ? 'status-important'
+                   : 'status-optional';
 
-    const rowHTML = `
-      <tr>
+    let prioridadeTexto = '';
+    if (card.prioridade === 3) prioridadeTexto = 'Urgente';
+    else if (card.prioridade === 2) prioridadeTexto = 'Importante';
+    else prioridadeTexto = 'Opcional';
+
+    // Crie a linha manualmente
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
         <td><input type="checkbox" data-id="${card._id}" ${card.concluida ? 'checked' : ''}></td>
         <td>${card.titulo}</td>
         <td>${inicio}</td>
         <td>${termino}</td>
         <td>${card.descricao}</td>
-        <td><span class="${prioridadeClass}">${prioridadeClass.replace('status-', '').toUpperCase()}</span></td>
-      </tr>
+        <td><span class="${prioridadeClass}">${prioridadeTexto}</span></td>
     `;
 
-    tbody.insertAdjacentHTML('beforeend', rowHTML);
+    tr.addEventListener('click', () => {
+      window.currentIdea = card;
+      atualizarDetalhes(card); // 
+      tbody.querySelectorAll('tr').forEach(row => row.classList.remove('selected-idea'));
+      tr.classList.add('selected-idea');
+    });
+
+    tbody.appendChild(tr);
   });
-
-  // Aqui pode adicionar event listeners para checkboxes, etc, se tiver
 }
-
 
 
 

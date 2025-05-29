@@ -101,36 +101,38 @@ const updateCard = async (req, res) => {
 };
 
 
-
 const searchCards = async (req, res) => {
     try {
         const searchTerm = req.query.titulo;
 
-        if (!searchTerm) {
-            const allCards = await BrainBox.find().sort({ criadoEm: -1 });
-            return res.status(200).json(allCards);
+        if (!req.userId) {
+            return res.status(401).json({ message: 'Usuário não autenticado' });
         }
 
-        const searchQuery = {
-            titulo: { $regex: searchTerm, $options: 'i' }
+        let searchQuery = { 
+            user: req.userId
         };
 
+        if (searchTerm) {
+            searchQuery.titulo = { $regex: searchTerm, $options: 'i' };
+        }
+
+        console.log('Search Query:', searchQuery);
+
         const braincards = await BrainBox.find(searchQuery).sort({ criadoEm: -1 });
+        console.log('Cards encontrados:', braincards.length);
 
         if (braincards.length === 0) {
-            console.log(`No cards found matching "${searchTerm}"`);
             return res.status(200).json([]);
         }
 
         res.status(200).json(braincards);
-        console.log(`Successfully fetched cards matching "${searchTerm}"`);
 
     } catch (err) {
         console.error("Error during search:", err);
-        res.status(500).json({ message: "Erro ao buscar os cards: " + err.message });
-    }
+        res.status(500).json({ message: "Erro ao buscar os cards: " + err.message });
+}
 };
-
 
 
 

@@ -24,6 +24,9 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+
+
 // Routes
 app.get('/favicon.ico', (req, res) => res.status(204));
 app.use("/api/braincards", cardsRouter);
